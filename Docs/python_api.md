@@ -419,6 +419,48 @@ Parses the location and extent of the bounding box to string.
 
 ---
 
+## carla.CAMData<a name="carla.CAMData"></a>
+<small style="display:block;margin-top:-20px;">Inherited from _[carla.SensorData](#carla.SensorData)_</small></br>
+This is the data type for cooperative awareness message reception, contained in a [CAMEvent](#carlacamevent)
+### Instance Variables
+- <a name="carla.CAMData.power"></a>**<font color="#f8805a">power</font>** (_float<small> - dBm</small>_)  
+Received power.  
+
+### Methods
+- <a name="carla.CAMData.get()"></a>**<font color="#7fb800">get</font>**(<font color="#00a6ed">**self**</font>)  
+Get the CAM data.   
+    - **Return:** _dict_
+    
+        Returns a nested dictionary containing the message following the ETSI standard: 
+        - `"Header"`: _dict_ 
+        -  `"Message"`: _dict_
+
+##### Dunder methods
+- <a name="carla.CAMData.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+
+---
+
+## carla.CAMEvent<a name="carla.CAMEvent"></a>
+<small style="display:block;margin-top:-20px;">Inherited from _[carla.SensorData](#carla.SensorData)_</small></br>
+Class that defines the data provided by a <b>sensor.other.v2x</b>. This is a collection type to combine returning several [CAMData](#carlacamdata).
+
+### Instance Variables
+
+
+### Methods
+- <a name="carla.CAMEvent.get_message_count()"></a>**<font color="#7fb800">get_message_count</font>**(<font color="#00a6ed">**self**</font>)  
+Get the number of received CAM's.   
+    - **Return:** _int_ 
+
+##### Dunder methods
+- <a name="carla.CAMEvent.__getitem__"></a>**<font color="#7fb800">\__getitem__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**pos**=int</font>)  
+- <a name="carla.CAMEvent.__iter__"></a>**<font color="#7fb800">\__iter__</font>**(<font color="#00a6ed">**self**</font>)  
+Iterate over the [carla.CAMData](#carla.CAMData) retrieved as data.  
+- <a name="carla.DVSEventArray.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
+
+---
+
+
 ## carla.CityObjectLabel<a name="carla.CityObjectLabel"></a>
 Enum declaration that contains the different tags available to filter the bounding boxes returned by [carla.World.get_level_bbs](#carla.World.get_level_bbs)(). These values correspond to the [semantic tag](ref_sensors.md#semantic-segmentation-camera) that the elements in the scene have.  
 
@@ -434,7 +476,13 @@ Enum declaration that contains the different tags available to filter the boundi
 - <a name="carla.CityObjectLabel.Sidewalks"></a>**<font color="#f8805a">Sidewalks</font>**  
 - <a name="carla.CityObjectLabel.TrafficSigns"></a>**<font color="#f8805a">TrafficSigns</font>**  
 - <a name="carla.CityObjectLabel.Vegetation"></a>**<font color="#f8805a">Vegetation</font>**  
-- <a name="carla.CityObjectLabel.Vehicles"></a>**<font color="#f8805a">Vehicles</font>**  
+- <a name="carla.CityObjectLabel.Car"></a>**<font color="#f8805a">Car</font>**  
+- <a name="carla.CityObjectLabel.Bus"></a>**<font color="#f8805a">Bus</font>**  
+- <a name="carla.CityObjectLabel.Truck"></a>**<font color="#f8805a">Truck</font>**  
+- <a name="carla.CityObjectLabel.Motorcycle"></a>**<font color="#f8805a">Motorcycle</font>**  
+- <a name="carla.CityObjectLabel.Bicycle"></a>**<font color="#f8805a">Bicycle</font>**  
+- <a name="carla.CityObjectLabel.Rider"></a>**<font color="#f8805a">Rider</font>**  
+- <a name="carla.CityObjectLabel.Train"></a>**<font color="#f8805a">Train</font>**  
 - <a name="carla.CityObjectLabel.Walls"></a>**<font color="#f8805a">Walls</font>**  
 - <a name="carla.CityObjectLabel.Sky"></a>**<font color="#f8805a">Sky</font>**  
 - <a name="carla.CityObjectLabel.Ground"></a>**<font color="#f8805a">Ground</font>**  
@@ -484,12 +532,23 @@ Creates a new world with default settings using `map_name` map. All actors in th
         - `map_name` (_str_) - Name of the map to be used in this world. Accepts both full paths and map names, e.g. '/Game/Carla/Maps/Town01' or 'Town01'. Remember that these paths are dynamic.  
         - `reset_settings` (_bool_) - Option to reset the episode setting to default values, set to false to keep the current settings. This is useful to keep sync mode when changing map and to keep deterministic scenarios.  
         - `map_layers` (_[carla.MapLayer](#carla.MapLayer)_) - Layers of the map that will be loaded. By default all layers are loaded. This parameter works like a flag mask.  
+    - **Return:** _[carla.World](#carla.World)_  
+    - **Warning:** <font color="#ED2F2F">_`map_layers` are only available for "Opt" maps
+_</font>  
+- <a name="carla.Client.load_world_if_different"></a>**<font color="#7fb800">load_world_if_different</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**map_name**</font>, <font color="#00a6ed">**reset_settings**=True</font>, <font color="#00a6ed">**map_layers**=[carla.MapLayer.All](#carla.MapLayer.All)</font>)  
+Creates a new world with default settings using `map_name` map only if it is a different map from the currently loaded map. Otherwise this function returns `None`. All actors in the current world will be destroyed.  
+    - **Parameters:**
+        - `map_name` (_str_) - Name of the map to be used in this world. Accepts both full paths and map names, e.g. '/Game/Carla/Maps/Town01' or 'Town01'. Remember that these paths are dynamic.  
+        - `reset_settings` (_bool_) - Option to reset the episode setting to default values, set to false to keep the current settings. This is useful to keep sync mode when changing map and to keep deterministic scenarios.  
+        - `map_layers` (_[carla.MapLayer](#carla.MapLayer)_) - Layers of the map that will be loaded. By default all layers are loaded. This parameter works like a flag mask.  
+    - **Return:** _[carla.World](#carla.World)_  
     - **Warning:** <font color="#ED2F2F">_`map_layers` are only available for "Opt" maps
 _</font>  
 - <a name="carla.Client.reload_world"></a>**<font color="#7fb800">reload_world</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**reset_settings**=True</font>)  
 Reload the current world, note that a new world is created with default settings using the same map. All actors present in the world will be destroyed, __but__ traffic manager instances will stay alive.  
     - **Parameters:**
         - `reset_settings` (_bool_) - Option to reset the episode setting to default values, set to false to keep the current settings. This is useful to keep sync mode when changing map and to keep deterministic scenarios.  
+    - **Return:** _[carla.World](#carla.World)_  
     - **Raises:** RuntimeError when corresponding.  
 - <a name="carla.Client.replay_file"></a>**<font color="#7fb800">replay_file</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**name**</font>, <font color="#00a6ed">**start**</font>, <font color="#00a6ed">**duration**</font>, <font color="#00a6ed">**follow_id**</font>, <font color="#00a6ed">**replay_sensors**</font>)  
 Load a new world with default settings using `map_name` map. All actors present in the current world will be destroyed, __but__ traffic manager instances will stay alive.  
@@ -651,6 +710,49 @@ Converts the image to a depth map using a logarithmic scale, leading to better p
 No changes applied to the image. Used by the [RGB camera](ref_sensors.md#rgb-camera).  
 
 ---
+## carla.CustomV2XData<a name="carla.CustomV2XData"></a>
+<small style="display:block;margin-top:-20px;">Inherited from _[carla.SensorData](#carla.SensorData)_</small></br>
+This is the data type defining a custom V2X message. Received as part of a [CustomV2XEvent](#carla.CustomV2XEvent).
+
+### Instance Variables
+- <a name="carla.CustomV2XData.power"></a>**<font color="#f8805a">power</font>** (_float<small> - dBm</small>_)  
+Received power.  
+
+### Methods
+- <a name="carla.CustomV2XData.get()"></a>**<font color="#7fb800">get</font>**(<font color="#00a6ed">**self**</font>)  
+Get the custom message.   
+    - **Return:** _dict_. 
+        
+        Returns a nested dictionary containing the message. It has two primary keys: 
+        -  `"Header"` : _dict_ 
+        - `"Message"`: _str_
+    
+
+##### Dunder methods
+- <a name="carla.CustomV2XData.__str__"></a>**<font color="#7fb800">\__str__</font>**(<font color="#00a6ed">**self**</font>)  
+
+---
+
+## carla.CustomV2XEvent<a name="carla.CustomV2XEvent"></a>
+<small style="display:block;margin-top:-20px;">Inherited from _[carla.SensorData](#carla.SensorData)_</small></br>
+Class that defines the data provided by a <b>sensor.other.v2x_custom</b>. This is a collection type to combine returning several [CustomV2XData](#carla.CustomV2XData).
+
+### Instance Variables
+
+
+### Methods
+- <a name="carla.CustomV2XEvent.get_message_count()"></a>**<font color="#7fb800">get_message_count</font>**(<font color="#00a6ed">**self**</font>)  
+Get the number of received CAM's.   
+    - **Return:** _int_ 
+
+##### Dunder methods
+- <a name="carla.CustomV2XEvent.__getitem__"></a>**<font color="#7fb800">\__getitem__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**pos**=int</font>)  
+- <a name="carla.CustomV2XEvent.__iter__"></a>**<font color="#7fb800">\__iter__</font>**(<font color="#00a6ed">**self**</font>)  
+Iterate over the [carla.CustomV2XData](#carla.CustomV2XData) retrieved as data.  
+- <a name="carla.CustomV2XEvent.__len__"></a>**<font color="#7fb800">\__len__</font>**(<font color="#00a6ed">**self**</font>)  
+
+---
+
 
 ## carla.DVSEvent<a name="carla.DVSEvent"></a>
 Class that defines a DVS event. An event is a quadruple, so a tuple of 4 elements, with `x`, `y` pixel coordinate location, timestamp `t` and polarity `pol` of the event. Learn more about them [here](ref_sensors.md).  
@@ -722,11 +824,43 @@ Draws an arrow from `begin` to `end` pointing in that direction.
         - `color` (_[carla.Color](#carla.Color)_) - RGB code to color the object. Red by default.  
         - `life_time` (_float<small> - seconds</small>_) - Shape's lifespan. By default it only lasts one frame. Set this to <code>0</code> for permanent shapes.  
 - <a name="carla.DebugHelper.draw_box"></a>**<font color="#7fb800">draw_box</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**box**</font>, <font color="#00a6ed">**rotation**</font>, <font color="#00a6ed">**thickness**=0.1</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0</font>)<button class="SnipetButton" id="carla.DebugHelper.draw_box-snipet_button">snippet &rarr;</button>  
-Draws a box, ussually to act for object colliders.  
+Draws a box, usually to act for object colliders.  
     - **Parameters:**
         - `box` (_[carla.BoundingBox](#carla.BoundingBox)_) - Object containing a location and the length of a box for every axis.  
         - `rotation` (_[carla.Rotation](#carla.Rotation)<small> - degrees (pitch,yaw,roll)</small>_) - Orientation of the box according to Unreal Engine's axis system.  
         - `thickness` (_float<small> - meters</small>_) - Density of the lines that define the box.  
+        - `color` (_[carla.Color](#carla.Color)_) - RGB code to color the object. Red by default.  
+        - `life_time` (_float<small> - seconds</small>_) - Shape's lifespan. By default it only lasts one frame. Set this to <code>0</code> for permanent shapes.  
+- <a name="carla.DebugHelper.draw_hud_arrow"></a>**<font color="#7fb800">draw_hud_arrow</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**begin**</font>, <font color="#00a6ed">**end**</font>, <font color="#00a6ed">**thickness**=0.1</font>, <font color="#00a6ed">**arrow_size**=0.1</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0</font>)  
+Draws an arrow on the HUD from `begin` to `end` which can only be seen server-side.  
+    - **Parameters:**
+        - `begin` (_[carla.Location](#carla.Location)<small> - meters</small>_) - Point in the coordinate system where the arrow starts.  
+        - `end` (_[carla.Location](#carla.Location)<small> - meters</small>_) - Point in the coordinate system where the arrow ends and points towards to.  
+        - `thickness` (_float<small> - meters</small>_) - Density of the line.  
+        - `arrow_size` (_float<small> - meters</small>_) - Size of the tip of the arrow.  
+        - `color` (_[carla.Color](#carla.Color)_) - RGB code to color the object. Red by default.  
+        - `life_time` (_float<small> - seconds</small>_) - Shape's lifespan. By default it only lasts one frame. Set this to <code>0</code> for permanent shapes.  
+- <a name="carla.DebugHelper.draw_hud_box"></a>**<font color="#7fb800">draw_hud_box</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**box**</font>, <font color="#00a6ed">**rotation**</font>, <font color="#00a6ed">**thickness**=0.1</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0</font>)  
+Draws a box on the HUD, usually to act for object colliders. The box can only be seen server-side.  
+    - **Parameters:**
+        - `box` (_[carla.BoundingBox](#carla.BoundingBox)_) - Object containing a location and the length of a box for every axis.  
+        - `rotation` (_[carla.Rotation](#carla.Rotation)<small> - degrees (pitch,yaw,roll)</small>_) - Orientation of the box according to Unreal Engine's axis system.  
+        - `thickness` (_float<small> - meters</small>_) - Density of the lines that define the box.  
+        - `color` (_[carla.Color](#carla.Color)_) - RGB code to color the object. Red by default.  
+        - `life_time` (_float<small> - seconds</small>_) - Shape's lifespan. By default it only lasts one frame. Set this to <code>0</code> for permanent shapes.  
+- <a name="carla.DebugHelper.draw_hud_line"></a>**<font color="#7fb800">draw_hud_line</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**begin**</font>, <font color="#00a6ed">**end**</font>, <font color="#00a6ed">**thickness**=0.1</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0</font>)  
+Draws a line on the HUD in between `begin` and `end`. The line can only be seen server-side.  
+    - **Parameters:**
+        - `begin` (_[carla.Location](#carla.Location)<small> - meters</small>_) - Point in the coordinate system where the line starts.  
+        - `end` (_[carla.Location](#carla.Location)<small> - meters</small>_) - Spot in the coordinate system where the line ends.  
+        - `thickness` (_float<small> - meters</small>_) - Density of the line.  
+        - `color` (_[carla.Color](#carla.Color)_) - RGB code to color the object. Red by default.  
+        - `life_time` (_float<small> - seconds</small>_) - Shape's lifespan. By default it only lasts one frame. Set this to <code>0</code> for permanent shapes.  
+- <a name="carla.DebugHelper.draw_hud_point"></a>**<font color="#7fb800">draw_hud_point</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**location**</font>, <font color="#00a6ed">**size**=0.1</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0</font>)  
+Draws a point on the HUD at `location`. The point can only be seen server-side.  
+    - **Parameters:**
+        - `location` (_[carla.Location](#carla.Location)<small> - meters</small>_) - Spot in the coordinate system to center the object.  
+        - `size` (_float<small> - meters</small>_) - Density of the point.  
         - `color` (_[carla.Color](#carla.Color)_) - RGB code to color the object. Red by default.  
         - `life_time` (_float<small> - seconds</small>_) - Shape's lifespan. By default it only lasts one frame. Set this to <code>0</code> for permanent shapes.  
 - <a name="carla.DebugHelper.draw_line"></a>**<font color="#7fb800">draw_line</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**begin**</font>, <font color="#00a6ed">**end**</font>, <font color="#00a6ed">**thickness**=0.1</font>, <font color="#00a6ed">**color**=(255,0,0)</font>, <font color="#00a6ed">**life_time**=-1.0</font>)  
@@ -2196,6 +2330,7 @@ Sensors compound a specific family of actors quite diverse and unique. They are 
   - [Collision detector](ref_sensors.md#collision-detector).
   - [Lane invasion detector](ref_sensors.md#lane-invasion-detector).
   - [Obstacle detector](ref_sensors.md#obstacle-detector).  
+  - [V2X sensor](ref_sensors.md#v2x-sensor).  
 
 ### Instance Variables
 - <a name="carla.Sensor.is_listening"></a>**<font color="#f8805a">is_listening</font>** (_boolean_)  
@@ -2223,6 +2358,10 @@ The function the sensor will be calling to every time the desired GBuffer textur
     - **Parameters:**
         - `gbuffer_id` (_[carla.GBufferTextureID](#carla.GBufferTextureID)_) - The ID of the target Unreal Engine GBuffer texture.  
         - `callback` (_function_) - The called function with one argument containing the received GBuffer texture.  
+- <a name="carla.Sensor.send"></a>**<font color="#7fb800">send</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**message**</font>)  
+Instructs the sensor to send the string given by `message` to all other CustomV2XSensors on the next tick.  
+    - **Parameters:**
+        - `message` (_string_) - The data to send. *Note*: maximum string length is 100 chars.        
 - <a name="carla.Sensor.stop"></a>**<font color="#7fb800">stop</font>**(<font color="#00a6ed">**self**</font>)  
 Commands the sensor to stop listening for data.  
 - <a name="carla.Sensor.stop_gbuffer"></a>**<font color="#7fb800">stop_gbuffer</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**gbuffer_id**</font>)  
@@ -2246,7 +2385,9 @@ Base class for all the objects containing data generated by a [carla.Sensor](#ca
   - Obstacle detector: [carla.ObstacleDetectionEvent](#carla.ObstacleDetectionEvent).<br>
   - Radar sensor: [carla.RadarMeasurement](#carla.RadarMeasurement).<br>
   - RSS sensor: [carla.RssResponse](#carla.RssResponse).<br>
-  - Semantic LIDAR sensor: [carla.SemanticLidarMeasurement](#carla.SemanticLidarMeasurement).  
+  - Semantic LIDAR sensor: [carla.SemanticLidarMeasurement](#carla.SemanticLidarMeasurement). 
+  - Cooperative awareness messages V2X sensor: [carla.CAMEvent](#carla.CAMEvent).  
+  - Custom V2X messages V2X sensor: [carla.CustomV2XEvent](#carla.CustomV2XEvent).  
 
 ### Instance Variables
 - <a name="carla.SensorData.frame"></a>**<font color="#f8805a">frame</font>** (_int_)  
@@ -4037,6 +4178,11 @@ Actor affected by the command.
 - <a name="command.DestroyActor.__init__"></a>**<font color="#7fb800">\__init__</font>**(<font color="#00a6ed">**self**</font>, <font color="#00a6ed">**actor**</font>)  
     - **Parameters:**
         - `actor` (_[carla.Actor](#carla.Actor) or int_) - Actor or its ID to whom the command will be applied to.  
+
+---
+
+## command.FutureActor<a name="command.FutureActor"></a>
+A utility object used to reference an actor that will be created in the command in the previous step, it has no parameters or methods.  
 
 ---
 
